@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 @Entity
+@Table(name = "trees")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
