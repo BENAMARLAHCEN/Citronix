@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/bank_management
+    url: jdbc:postgresql://localhost:5432/citron_db
     username: admin
     password: admin
     driver-class-name: org.postgresql.Driver

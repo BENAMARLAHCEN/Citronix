@@ -1,0 +1,65 @@
+classDiagram
+    class Farm {
+        -Long id
+        -String name
+        -String location
+        -Double totalArea
+        -LocalDate creationDate
+        +calculateRemainingArea()
+        +validateFieldsArea()
+    }
+
+    class Field {
+        -Long id
+        -Double area
+        -Farm farm
+        +validateArea()
+        +calculateTreeCapacity()
+    }
+
+    class Tree {
+        -Long id
+        -LocalDate plantingDate
+        -Field field
+        -Boolean isProductive
+        +calculateAge()
+        +calculateProductivity()
+        +isPlantingSeasonValid()
+    }
+
+    class Harvest {
+        -Long id
+        -LocalDate harvestDate
+        -Season season
+        -Double totalQuantity
+        -Double remainingQuantity
+        +validateHarvestSeason()
+        +calculateTotalQuantity()
+        +updateRemainingQuantity()
+    }
+
+    class HarvestDetail {
+        -Long id
+        -Harvest harvest
+        -Tree tree
+        -Double quantity
+        +validateTreeHarvest()
+    }
+
+    class Sale {
+        -Long id
+        -LocalDate saleDate
+        -Double unitPrice
+        -Double quantity
+        -String client
+        -Harvest harvest
+        +calculateRevenue()
+        +validateQuantity()
+    }
+
+
+Farm "1" -- "*" Field : contains
+Field "1" -- "*" Tree : contains
+Harvest "1" -- "*" HarvestDetail : contains
+Tree "1" -- "*" HarvestDetail : harvested in
+Harvest "1" -- "*" Sale : sold in
