@@ -1,10 +1,11 @@
-package com.citronix.services;
+package com.citronix.services.impl;
 
 import com.citronix.dto.FarmDTO;
 import com.citronix.entities.Farm;
+import com.citronix.exceptions.EntityNotFoundException;
 import com.citronix.mappers.FarmMapper;
 import com.citronix.repositories.FarmRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.citronix.services.FarmService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
