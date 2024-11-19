@@ -1,4 +1,7 @@
 package com.citronix.repositories;
 
-public interface FarmRepository {
+import com.citronix.entities.Farm;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface FarmRepository extends JpaRepository<Farm, Long> {
 }
