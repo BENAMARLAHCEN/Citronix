@@ -30,4 +30,7 @@ public class Tree {
 
     private Boolean isProductive;
 
+    public int calculateAge() {
+        return LocalDate.now().getYear() - plantingDate.getYear();
+    }
 }
