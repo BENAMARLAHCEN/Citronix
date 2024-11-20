@@ -1,5 +1,6 @@
 package com.citronix.entities;
 
+import com.citronix.utils.validation.ValidPlantingSeason;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,7 @@ public class Tree {
     private Long id;
 
     @PastOrPresent
+    @ValidPlantingSeason
     private LocalDate plantingDate;
 
     @ManyToOne
@@ -45,10 +47,5 @@ public class Tree {
         } else {
             return 0.0;
         }
-    }
-
-    public boolean isPlantingSeasonValid() {
-        int month = plantingDate.getMonthValue();
-        return month >= 3 && month <= 5;
     }
 }
