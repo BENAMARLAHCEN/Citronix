@@ -31,7 +31,7 @@ public class Farm {
     @PastOrPresent
     private LocalDate creationDate;
 
-    @OneToMany(mappedBy = "farm", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "farm", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Field> fields;
 
     public Double calculateRemainingArea() {
