@@ -46,4 +46,9 @@ public class Tree {
             return 0.0;
         }
     }
+
+    public boolean isPlantingSeasonValid() {
+        int month = plantingDate.getMonthValue();
+        return month >= 3 && month <= 5;
+    }
 }
