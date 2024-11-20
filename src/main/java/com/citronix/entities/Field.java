@@ -26,11 +26,11 @@ public class Field {
     @Min(value = 0, message = "Minimum area should be at least 0.1 hectares")
     private Double area;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "farm_id", nullable = false)
     private Farm farm;
 
-    @OneToMany(mappedBy = "field", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "field", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Tree> trees;
 
     public boolean validateArea() {
