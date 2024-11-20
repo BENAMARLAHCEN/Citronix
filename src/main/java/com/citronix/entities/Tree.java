@@ -33,4 +33,17 @@ public class Tree {
     public int calculateAge() {
         return LocalDate.now().getYear() - plantingDate.getYear();
     }
+
+    public double calculateProductivity() {
+        int age = calculateAge();
+        if (age < 3) {
+            return 2.5;
+        } else if (age <= 10) {
+            return 12.0;
+        } else if (age <= 20) {
+            return 20.0;
+        } else {
+            return 0.0;
+        }
+    }
 }
