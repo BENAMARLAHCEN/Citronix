@@ -30,6 +30,9 @@ public class TreeServiceImpl implements TreeService {
         Field field = fieldRepository.findById(treeDTO.getFieldId()).orElseThrow(() -> new EntityNotFoundException("Field not found"));
         Tree tree = dtoMapper.toTree(treeDTO);
         tree.setField(field);
+        if (!tree.isPlantingSeasonValid()){
+            throw new IllegalArgumentException("Planting date is not within the planting season");
+        }
         tree = treeRepository.save(tree);
         return dtoMapper.toTreeDTO(tree);
     }
