@@ -35,6 +35,9 @@ public class FarmServiceImpl implements FarmService {
                 .orElseThrow(() -> new EntityNotFoundException("Farm not found"));
         existingFarm.setName(farmDTO.getName());
         existingFarm.setLocation(farmDTO.getLocation());
+        if (farmDTO.getTotalArea().compareTo(existingFarm.getFields().stream().mapToDouble(field -> field.getArea()).sum()) < 0) {
+            throw new IllegalArgumentException("Total area cannot be greater than remaining area");
+        }
         existingFarm.setTotalArea(farmDTO.getTotalArea());
         existingFarm.setCreationDate(farmDTO.getCreationDate());
         Farm updatedFarm = farmRepository.save(existingFarm);
