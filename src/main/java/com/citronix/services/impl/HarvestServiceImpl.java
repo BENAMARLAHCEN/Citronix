@@ -5,6 +5,7 @@ import com.citronix.dto.HarvestDetailDTO;
 import com.citronix.entities.Harvest;
 import com.citronix.entities.HarvestDetail;
 import com.citronix.entities.Tree;
+import com.citronix.entities.enums.Season;
 import com.citronix.exceptions.EntityNotFoundException;
 import com.citronix.mappers.DtoMapper;
 import com.citronix.repositories.FieldRepository;
@@ -15,11 +16,41 @@ import com.citronix.services.HarvestService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 public class HarvestServiceImpl implements HarvestService {
+    private static final Map<Season, int[]> SEASON_MONTH_RANGES = new HashMap<>();
+
+    static {
+        SEASON_MONTH_RANGES.put(Season.AUTUMN, new int[]{9, 12});
+        SEASON_MONTH_RANGES.put(Season.SPRING, new int[]{3, 6});
+        SEASON_MONTH_RANGES.put(Season.SUMMER, new int[]{6, 9});
+        SEASON_MONTH_RANGES.put(Season.WINTER, new int[]{12, 3});
+    }
+
+    private void validateHarvestDate(Harvest harvest) {
+        int month = harvest.getHarvestDate().getMonthValue();
+        int[] range = SEASON_MONTH_RANGES.get(harvest.getSeason());
+
+        if (range[0] < range[1]) {
+            if (month < range[0] || month > range[1]) {
+                throw new IllegalStateException(harvest.getSeason() + " harvest can only be done between " + getMonthName(range[0]) + " and " + getMonthName(range[1]));
+            }
+        } else {
+            if (month < range[0] && month > range[1]) {
+                throw new IllegalStateException(harvest.getSeason() + " harvest can only be done between " + getMonthName(range[0]) + " and " + getMonthName(range[1]));
+            }
+        }
+    }
+
+    private String getMonthName(int month) {
+        return java.time.Month.of(month).name();
+    }
+
     private final HarvestRepository harvestRepository;
     private final TreeRepository treeRepository;
     private final FieldRepository fieldRepository;
@@ -37,9 +68,10 @@ public class HarvestServiceImpl implements HarvestService {
     @Override
     public HarvestDTO createHarvest(HarvestDTO harvestDTO) {
         Harvest harvest = dtoMapper.toHarvest(harvestDTO);
-        if(harvestRepository.existsByFieldIdAndSeasonAndHarvestDate(harvestDTO.getFieldId(), harvest.getSeason(), harvestDTO.getHarvestDate())) {
+        if(harvestRepository.existsByFieldIdAndSeason(harvestDTO.getFieldId(), harvest.getSeason())) {
             throw new RuntimeException("Harvest already exists for this field and season");
         }
+        validateHarvestDate(harvest);
         List<HarvestDetail> harvestDetails = new ArrayList<>();
         if (harvestDTO.getHarvestDetails() != null) {
             for (HarvestDetailDTO detailDTO : harvestDTO.getHarvestDetails()) {
