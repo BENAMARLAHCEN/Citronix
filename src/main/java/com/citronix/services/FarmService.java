@@ -11,4 +11,6 @@ public interface FarmService {
     List<FarmDTO> getAllFarms();
     void deleteFarm(Long id);
     Double calculateRemainingArea(Long farmId);
+
+    List<FarmDTO> searchFarms(String name, String location, Double totalArea);
 }

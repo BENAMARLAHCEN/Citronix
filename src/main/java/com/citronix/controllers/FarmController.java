@@ -47,4 +47,12 @@ public class FarmController {
         List<FarmDTO> farms = farmService.getAllFarms();
         return ResponseEntity.ok(farms);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<FarmDTO>> searchFarms(@RequestParam(required = false) String name,
+                                                     @RequestParam(required = false) String location,
+                                                     @RequestParam(required = false) Double totalArea) {
+        List<FarmDTO> farms = farmService.searchFarms(name, location, totalArea);
+        return ResponseEntity.ok(farms);
+    }
 }
