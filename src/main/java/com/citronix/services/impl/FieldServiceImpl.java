@@ -29,6 +29,9 @@ public class FieldServiceImpl implements FieldService {
     public FieldDTO createField(FieldDTO fieldDTO) {
         Farm farm = farmRepository.findById(fieldDTO.getFarmId()).orElseThrow(() -> new EntityNotFoundException("Farm not found"));
         Field field = fieldMapper.toField(fieldDTO);
+        if (farm.getFields().size() >= 10) {
+            throw new IllegalArgumentException("Farm cannot have more than 10 fields");
+        }
         if (farm.calculateRemainingArea() < field.getArea()) {
             throw new IllegalArgumentException("Farm does not have enough area to create this field");
         }
