@@ -34,4 +34,9 @@ public interface DtoMapper {
     @Mapping(target = "harvest.id", source = "harvestId")
     @Mapping(target = "tree.id", source = "treeId")
     HarvestDetail toHarvestDetail(HarvestDetailDTO harvestDetailDTO);
+
+    @Mapping(target = "harvestId", source = "harvest.id")
+    SaleDTO toSaleDTO(Sale sale);
+
+    Sale toSale(SaleDTO saleDTO);
 }
