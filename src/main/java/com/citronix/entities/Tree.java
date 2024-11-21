@@ -32,12 +32,12 @@ public class Tree {
 
     private Boolean isProductive;
 
-    public int calculateAge() {
+    public int getAge() {
         return LocalDate.now().getYear() - plantingDate.getYear();
     }
 
-    public double calculateProductivity() {
-        int age = calculateAge();
+    public double getProductivity() {
+        int age = getAge();
         if (age < 3) {
             return 2.5;
         } else if (age <= 10) {
