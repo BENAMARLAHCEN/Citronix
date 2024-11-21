@@ -32,11 +32,14 @@ public class Harvest {
     @PositiveOrZero
     private Double remainingQuantity;
 
+    @ManyToOne
+    @JoinColumn(name = "field_id", nullable = false)
+    private Field field;
+
     @OneToMany(mappedBy = "harvest", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HarvestDetail> harvestDetails;
 
     public boolean validateHarvestSeason() {
-        // Ensures that harvest occurs within the valid season timeframe
         return season != null;
     }
 
