@@ -29,6 +29,12 @@ public class FieldServiceImpl implements FieldService {
     public FieldDTO createField(FieldDTO fieldDTO) {
         Farm farm = farmRepository.findById(fieldDTO.getFarmId()).orElseThrow(() -> new EntityNotFoundException("Farm not found"));
         Field field = fieldMapper.toField(fieldDTO);
+        if (farm.calculateRemainingArea() < field.getArea()) {
+            throw new IllegalArgumentException("Farm does not have enough area to create this field");
+        }
+        if (farm.getTotalArea() * 0.5 < field.getArea()) {
+            throw new IllegalArgumentException("Field area cannot be more than 50% of farm area");
+        }
         field.setFarm(farm);
         field = fieldRepository.save(field);
         return fieldMapper.toFieldDTO(field);
@@ -40,9 +46,15 @@ public class FieldServiceImpl implements FieldService {
         Field nowUpdateField = fieldMapper.toField(fieldDTO);
         if (fieldDTO.getFarmId() != null) {
             Farm farm = farmRepository.findById(fieldDTO.getFarmId()).orElseThrow(() -> new EntityNotFoundException("Farm not found"));
-            nowUpdateField.setFarm(farm);
+            existingField.setFarm(farm);
         }
         if (fieldDTO.getArea() != null) {
+            if (existingField.getFarm().calculateRemainingArea() - existingField.getArea() < nowUpdateField.getArea()) {
+                throw new IllegalArgumentException("Farm does not have enough area to create this field");
+            }
+            if (existingField.getFarm().getTotalArea() * 0.5 < existingField.getArea()) {
+                throw new IllegalArgumentException("Field area cannot be more than 50% of farm area");
+            }
             existingField.setArea(nowUpdateField.getArea());
         }
         if (fieldDTO.getTrees() != null) {
