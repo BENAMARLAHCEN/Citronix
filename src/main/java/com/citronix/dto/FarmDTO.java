@@ -20,6 +20,7 @@ public class FarmDTO {
     private String location;
 
     @Positive
+    @DecimalMin(value = "0.1", message = "Minimum area should be at least 0.1 hectares")
     private Double totalArea;
 
     @PastOrPresent

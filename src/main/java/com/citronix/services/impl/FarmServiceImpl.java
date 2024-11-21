@@ -69,4 +69,11 @@ public class FarmServiceImpl implements FarmService {
                 .orElseThrow(() -> new EntityNotFoundException("Farm not found"));
         return farm.calculateRemainingArea();
     }
+
+    @Override
+    public List<FarmDTO> searchFarms(String name, String location, Double totalArea) {
+        List<Farm> farms = farmRepository.searchFarms(name, location, totalArea);
+        return farms.stream().map(farm -> farmMapper.toFarmDTO(farm))
+                .collect(Collectors.toList());
+    }
 }
