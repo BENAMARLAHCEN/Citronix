@@ -158,4 +158,16 @@ public class HarvestServiceImpl implements HarvestService {
         HarvestDetail harvestDetail = harvestDetailRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Harvest detail not found"));
         return dtoMapper.toHarvestDetailDTO(harvestDetail);
     }
+
+    public List<HarvestDTO> getHarvestsBySeason(String season) {
+        Season seasonEnum = Season.valueOf(season.toUpperCase());
+        List<Harvest> harvests = harvestRepository.findBySeason(seasonEnum);
+        return harvests.stream().map(dtoMapper::toHarvestDTO).collect(Collectors.toList());
+    }
+
+    public List<HarvestDTO> getHarvestsBySeasonAndField(String season, Long fieldId) {
+        Season seasonEnum = Season.valueOf(season.toUpperCase());
+        List<Harvest> harvests = harvestRepository.findBySeasonAndFieldId(seasonEnum, fieldId);
+        return harvests.stream().map(dtoMapper::toHarvestDTO).collect(Collectors.toList());
+    }
 }

@@ -66,4 +66,17 @@ public class HarvestController {
         List<HarvestDetailDTO> harvestDetails = harvestService.getHarvestDetailsByHarvestId(id);
         return ResponseEntity.ok(harvestDetails);
     }
+
+    // Suivre les récoltes par saison (printemps, été, automne, hiver).
+    @GetMapping("/season/{season}")
+    public ResponseEntity<List<HarvestDTO>> getHarvestsBySeason(@PathVariable String season) {
+        List<HarvestDTO> harvests = harvestService.getHarvestsBySeason(season);
+        return ResponseEntity.ok(harvests);
+    }
+
+    @GetMapping("/season/{season}/{fieldId}")
+    public ResponseEntity<List<HarvestDTO>> getHarvestsBySeasonAndField(@PathVariable String season, @PathVariable Long fieldId) {
+        List<HarvestDTO> harvests = harvestService.getHarvestsBySeasonAndField(season, fieldId);
+        return ResponseEntity.ok(harvests);
+    }
 }

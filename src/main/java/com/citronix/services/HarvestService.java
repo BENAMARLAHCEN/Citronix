@@ -15,4 +15,8 @@ public interface HarvestService {
     void deleteHarvestDetail(Long id);
     List<HarvestDetailDTO> getHarvestDetailsByHarvestId(Long id);
     HarvestDetailDTO getHarvestDetailById(Long id);
+
+    List<HarvestDTO> getHarvestsBySeason(String season);
+
+    List<HarvestDTO> getHarvestsBySeasonAndField(String season, Long fieldId);
 }
