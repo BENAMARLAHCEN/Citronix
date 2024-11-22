@@ -21,10 +21,8 @@ public interface DtoMapper {
     @Mapping(target = "fieldId", source = "field.id")
     TreeDTO toTreeDTO(Tree tree);
 
-    @Mapping(target = "fieldId", source = "field.id")
     HarvestDTO toHarvestDTO(Harvest harvest);
 
-    @Mapping(target = "field.id", source = "fieldId")
     Harvest toHarvest(HarvestDTO harvestDTO);
 
     @Mapping(target = "harvestId", source = "harvest.id")

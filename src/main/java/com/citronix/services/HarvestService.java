@@ -18,5 +18,4 @@ public interface HarvestService {
 
     List<HarvestDTO> getHarvestsBySeason(String season);
 
-    List<HarvestDTO> getHarvestsBySeasonAndField(String season, Long fieldId);
 }
