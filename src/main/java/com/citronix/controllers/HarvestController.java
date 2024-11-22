@@ -74,9 +74,5 @@ public class HarvestController {
         return ResponseEntity.ok(harvests);
     }
 
-    @GetMapping("/season/{season}/{fieldId}")
-    public ResponseEntity<List<HarvestDTO>> getHarvestsBySeasonAndField(@PathVariable String season, @PathVariable Long fieldId) {
-        List<HarvestDTO> harvests = harvestService.getHarvestsBySeasonAndField(season, fieldId);
-        return ResponseEntity.ok(harvests);
-    }
+
 }

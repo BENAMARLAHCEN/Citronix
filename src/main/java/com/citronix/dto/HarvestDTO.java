@@ -23,8 +23,5 @@ public class HarvestDTO {
     private Double totalQuantity;
     private Double remainingQuantity;
 
-
-    private Long fieldId;
-
     private List<HarvestDetailDTO> harvestDetails;
 }

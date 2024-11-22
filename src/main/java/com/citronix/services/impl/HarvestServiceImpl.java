@@ -68,18 +68,12 @@ public class HarvestServiceImpl implements HarvestService {
     @Override
     public HarvestDTO createHarvest(HarvestDTO harvestDTO) {
         Harvest harvest = dtoMapper.toHarvest(harvestDTO);
-        if(harvestRepository.existsByFieldIdAndSeason(harvestDTO.getFieldId(), harvest.getSeason())) {
-            throw new RuntimeException("Harvest already exists for this field and season");
-        }
         validateHarvestDate(harvest);
         List<HarvestDetail> harvestDetails = new ArrayList<>();
         if (harvestDTO.getHarvestDetails() != null) {
             for (HarvestDetailDTO detailDTO : harvestDTO.getHarvestDetails()) {
                 Tree tree = treeRepository.findById(detailDTO.getTreeId()).orElseThrow(() -> new EntityNotFoundException("Tree not found"));
-                if (tree.getField().getId() != harvestDTO.getFieldId()) {
-                    throw new IllegalStateException("The tree does not belong to the field.");
-                }
-                if (harvestRepository.existsByHarvestDetailsTreeIdAndSeason(tree.getId(), harvest.getSeason())) {
+                if(harvestDetailRepository.existsBySeasonAndHarvestDateYear(harvest.getSeason(), harvest.getHarvestDate().getYear(), tree.getId())) {
                     throw new IllegalStateException("The tree has already been harvested this season.");
                 }
                 HarvestDetail harvestDetail = dtoMapper.toHarvestDetail(detailDTO);
@@ -88,7 +82,6 @@ public class HarvestServiceImpl implements HarvestService {
                 harvestDetails.add(harvestDetail);
             }
         }
-        harvest.setField(fieldRepository.findById(harvestDTO.getFieldId()).orElseThrow(() -> new EntityNotFoundException("Field not found")));
         harvest.setTotalQuantity(harvestDetails.stream().mapToDouble(HarvestDetail::getQuantity).sum());
         harvest.setRemainingQuantity(harvest.getTotalQuantity());
         harvest.setHarvestDetails(null);
@@ -121,10 +114,7 @@ public class HarvestServiceImpl implements HarvestService {
     public HarvestDetailDTO addHarvestDetail(HarvestDetailDTO harvestDetailDTO) {
         Harvest harvest = harvestRepository.findById(harvestDetailDTO.getHarvestId()).orElseThrow(() -> new EntityNotFoundException("Harvest not found"));
         Tree tree = treeRepository.findById(harvestDetailDTO.getTreeId()).orElseThrow(() -> new EntityNotFoundException("Tree not found"));
-        if (tree.getField().getId() != harvest.getField().getId()) {
-            throw new IllegalStateException("The tree does not belong to the field.");
-        }
-        if (harvestRepository.existsByHarvestDetailsTreeIdAndSeason(tree.getId(), harvest.getSeason())) {
+        if(harvestDetailRepository.existsBySeasonAndHarvestDateYear(harvest.getSeason(), harvest.getHarvestDate().getYear(), tree.getId())) {
             throw new IllegalStateException("The tree has already been harvested this season.");
         }
         HarvestDetail harvestDetail = dtoMapper.toHarvestDetail(harvestDetailDTO);
@@ -162,12 +152,6 @@ public class HarvestServiceImpl implements HarvestService {
     public List<HarvestDTO> getHarvestsBySeason(String season) {
         Season seasonEnum = Season.valueOf(season.toUpperCase());
         List<Harvest> harvests = harvestRepository.findBySeason(seasonEnum);
-        return harvests.stream().map(dtoMapper::toHarvestDTO).collect(Collectors.toList());
-    }
-
-    public List<HarvestDTO> getHarvestsBySeasonAndField(String season, Long fieldId) {
-        Season seasonEnum = Season.valueOf(season.toUpperCase());
-        List<Harvest> harvests = harvestRepository.findBySeasonAndFieldId(seasonEnum, fieldId);
         return harvests.stream().map(dtoMapper::toHarvestDTO).collect(Collectors.toList());
     }
 }
