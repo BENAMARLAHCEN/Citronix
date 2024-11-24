@@ -55,7 +55,6 @@ class FieldControllerTest {
 
         objectMapper = new ObjectMapper();
 
-        // Initialize test data
         treeDTO = TreeDTO.builder()
                 .id(1L)
                 .fieldId(1L)
@@ -76,10 +75,8 @@ class FieldControllerTest {
         @Test
         @DisplayName("Should create field successfully")
         void createField_Success() throws Exception {
-            // Arrange
             when(fieldService.createField(any(FieldDTO.class))).thenReturn(fieldDTO);
 
-            // Act & Assert
             mockMvc.perform(post("/api/fields")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(fieldDTO)))
@@ -95,10 +92,8 @@ class FieldControllerTest {
         @Test
         @DisplayName("Should return 400 when field area is negative")
         void createField_InvalidArea() throws Exception {
-            // Arrange
             fieldDTO.setArea(-1.0);
 
-            // Act & Assert
             mockMvc.perform(post("/api/fields")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(fieldDTO)))
@@ -111,11 +106,9 @@ class FieldControllerTest {
         @Test
         @DisplayName("Should return 400 when field exceeds farm capacity")
         void createField_ExceedsFarmCapacity() throws Exception {
-            // Arrange
             when(fieldService.createField(any(FieldDTO.class)))
                     .thenThrow(new IllegalArgumentException("Field area exceeds farm capacity"));
 
-            // Act & Assert
             mockMvc.perform(post("/api/fields")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(fieldDTO)))
@@ -131,10 +124,8 @@ class FieldControllerTest {
         @Test
         @DisplayName("Should update field successfully")
         void updateField_Success() throws Exception {
-            // Arrange
             when(fieldService.updateField(eq(1L), any(FieldDTO.class))).thenReturn(fieldDTO);
 
-            // Act & Assert
             mockMvc.perform(put("/api/fields/1")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(fieldDTO)))
@@ -149,11 +140,9 @@ class FieldControllerTest {
         @Test
         @DisplayName("Should return 404 when updating non-existent field")
         void updateField_NotFound() throws Exception {
-            // Arrange
             when(fieldService.updateField(eq(1L), any(FieldDTO.class)))
                     .thenThrow(new EntityNotFoundException("Field not found"));
 
-            // Act & Assert
             mockMvc.perform(put("/api/fields/1")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(fieldDTO)))
@@ -164,10 +153,8 @@ class FieldControllerTest {
         @Test
         @DisplayName("Should return 400 when updating with invalid data")
         void updateField_InvalidData() throws Exception {
-            // Arrange
             fieldDTO.setArea(-1.0);
 
-            // Act & Assert
             mockMvc.perform(put("/api/fields/1")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(fieldDTO)))
@@ -182,11 +169,9 @@ class FieldControllerTest {
         @Test
         @DisplayName("Should return all fields successfully")
         void getAllFields_Success() throws Exception {
-            // Arrange
             List<FieldDTO> fields = Arrays.asList(fieldDTO);
             when(fieldService.getAllFields()).thenReturn(fields);
 
-            // Act & Assert
             mockMvc.perform(get("/api/fields"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", hasSize(1)))
@@ -200,10 +185,8 @@ class FieldControllerTest {
         @Test
         @DisplayName("Should return empty list when no fields exist")
         void getAllFields_Empty() throws Exception {
-            // Arrange
             when(fieldService.getAllFields()).thenReturn(Collections.emptyList());
 
-            // Act & Assert
             mockMvc.perform(get("/api/fields"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", hasSize(0)));
