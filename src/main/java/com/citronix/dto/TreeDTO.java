@@ -11,6 +11,8 @@ import java.time.LocalDate;
 @Builder
 public class TreeDTO {
 
+    private Long id;
+
     @PastOrPresent
     @ValidPlantingSeason(message = "Planting season is from March to May")
     private LocalDate plantingDate;
