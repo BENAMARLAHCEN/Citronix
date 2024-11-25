@@ -10,4 +10,6 @@ public interface TreeService {
     TreeDTO getTreeById(Long id);
     void deleteTree(Long id);
     List<TreeDTO> getAllTrees();
+
+    List<TreeDTO> getTreesByFieldId(Long fieldId);
 }

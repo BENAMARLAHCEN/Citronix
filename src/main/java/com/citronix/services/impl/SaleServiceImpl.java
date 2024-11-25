@@ -26,14 +26,20 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public SaleDTO createSale(SaleDTO saleDTO) {
+        Sale sale = dtoMapper.toSale(saleDTO);
         Harvest harvest = harvestRepository.findById(saleDTO.getHarvestId())
                 .orElseThrow(() -> new EntityNotFoundException("Harvest not found"));
-        if (saleDTO.getQuantity() > harvest.getRemainingQuantity()) {
+        if (sale.getQuantity() > harvest.getRemainingQuantity()) {
             throw new IllegalArgumentException("Quantity exceeds remaining harvest quantity");
+        }
+        if (sale.getQuantity() < 0) {
+            throw new IllegalArgumentException("Quantity cannot be negative");
+        }
+        if (sale.getSaleDate().isBefore(harvest.getHarvestDate())) {
+            throw new IllegalArgumentException("Sale date cannot be before harvest date");
         }
         harvest.updateRemainingQuantity(saleDTO.getQuantity());
         harvestRepository.save(harvest);
-        Sale sale = dtoMapper.toSale(saleDTO);
         sale.setHarvest(harvest);
         sale = saleRepository.save(sale);
         return dtoMapper.toSaleDTO(sale);
@@ -47,6 +53,12 @@ public class SaleServiceImpl implements SaleService {
                 .orElseThrow(() -> new EntityNotFoundException("Harvest not found"));
         if (saleDTO.getQuantity() > harvest.getRemainingQuantity() + sale.getQuantity()) {
             throw new IllegalArgumentException("Quantity exceeds remaining harvest quantity");
+        }
+        if (saleDTO.getQuantity() < 0) {
+            throw new IllegalArgumentException("Quantity cannot be negative");
+        }
+        if (saleDTO.getSaleDate().isBefore(harvest.getHarvestDate())) {
+            throw new IllegalArgumentException("Sale date cannot be before harvest date");
         }
         harvest.updateRemainingQuantity(saleDTO.getQuantity() - sale.getQuantity());
         harvestRepository.save(harvest);

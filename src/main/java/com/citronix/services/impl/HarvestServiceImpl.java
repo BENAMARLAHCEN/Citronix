@@ -123,8 +123,8 @@ public class HarvestServiceImpl implements HarvestService {
         harvestDetail.setHarvest(harvest);
         harvestDetailRepository.save(harvestDetail);
         harvest.getHarvestDetails().add(harvestDetail);
-        harvest.setTotalQuantity(harvest.getHarvestDetails().stream().mapToDouble(HarvestDetail::getQuantity).sum());
-        harvest.setRemainingQuantity(harvest.getTotalQuantity() - harvest.getHarvestDetails().stream().mapToDouble(HarvestDetail::getQuantity).sum());
+        harvest.calculateTotalQuantity();
+        harvest.setRemainingQuantity(harvest.getRemainingQuantity() + harvestDetail.getQuantity());
         harvestRepository.save(harvest);
         return dtoMapper.toHarvestDetailDTO(harvestDetail);
     }
@@ -133,8 +133,8 @@ public class HarvestServiceImpl implements HarvestService {
         HarvestDetail harvestDetail = harvestDetailRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Harvest detail not found"));
         Harvest harvest = harvestDetail.getHarvest();
         harvest.getHarvestDetails().remove(harvestDetail);
-        harvest.setTotalQuantity(harvest.getHarvestDetails().stream().mapToDouble(HarvestDetail::getQuantity).sum());
-        harvest.setRemainingQuantity(harvest.getTotalQuantity() - harvest.getHarvestDetails().stream().mapToDouble(HarvestDetail::getQuantity).sum());
+        harvest.calculateTotalQuantity();
+        harvest.setRemainingQuantity(harvest.getRemainingQuantity() + harvestDetail.getQuantity());
         harvestRepository.save(harvest);
         harvestDetailRepository.delete(harvestDetail);
     }

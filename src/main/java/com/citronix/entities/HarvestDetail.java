@@ -26,9 +26,4 @@ public class HarvestDetail {
 
     @PositiveOrZero
     private Double quantity;
-
-    public boolean validateTreeHarvest() {
-        // A tree cannot be harvested more than once in the same season
-        return harvest.getHarvestDetails().stream().noneMatch(detail -> detail.getTree().equals(tree));
-    }
 }

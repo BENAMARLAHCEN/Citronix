@@ -32,12 +32,4 @@ public class Field {
 
     @OneToMany(mappedBy = "field", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Tree> trees;
-
-    public boolean validateArea() {
-        return area >= 0.1 && area <= (farm.getTotalArea() * 0.5);
-    }
-
-    public int calculateTreeCapacity() {
-        return (int) (area * 100); // Max 100 trees per hectare
-    }
 }

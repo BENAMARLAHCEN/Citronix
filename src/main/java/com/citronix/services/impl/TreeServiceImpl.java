@@ -28,6 +28,9 @@ public class TreeServiceImpl implements TreeService {
     @Override
     public TreeDTO createTree(TreeDTO treeDTO) {
         Field field = fieldRepository.findById(treeDTO.getFieldId()).orElseThrow(() -> new EntityNotFoundException("Field not found"));
+        if (field.getFarm().getCreationDate().isAfter(treeDTO.getPlantingDate())) {
+            throw new IllegalArgumentException("Planting date cannot be before farm creation date");
+        }
         Tree tree = dtoMapper.toTree(treeDTO);
         tree.setField(field);
         tree = treeRepository.save(tree);
@@ -42,6 +45,9 @@ public class TreeServiceImpl implements TreeService {
             existingTree.setField(field);
         }
         if (treeDTO.getPlantingDate()!= null) {
+            if (existingTree.getField().getFarm().getCreationDate().isAfter(treeDTO.getPlantingDate())) {
+                throw new IllegalArgumentException("Planting date cannot be before farm creation date");
+            }
             existingTree.setPlantingDate(treeDTO.getPlantingDate());
         }
         if (treeDTO.getIsProductive() != null) {
@@ -66,6 +72,12 @@ public class TreeServiceImpl implements TreeService {
     @Override
     public List<TreeDTO> getAllTrees() {
         List<Tree> trees = treeRepository.findAll();
+        return trees.stream().map(tree -> dtoMapper.toTreeDTO(tree)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TreeDTO> getTreesByFieldId(Long fieldId) {
+        List<Tree> trees = treeRepository.findByFieldId(fieldId);
         return trees.stream().map(tree -> dtoMapper.toTreeDTO(tree)).collect(Collectors.toList());
     }
 }

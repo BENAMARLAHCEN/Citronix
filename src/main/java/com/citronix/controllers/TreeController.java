@@ -47,4 +47,10 @@ public class TreeController {
         List<TreeDTO> trees = treeService.getAllTrees();
         return ResponseEntity.ok(trees);
     }
+
+    @GetMapping("/field/{fieldId}")
+    public ResponseEntity<List<TreeDTO>> getTreesByFieldId(@PathVariable Long fieldId) {
+        List<TreeDTO> trees = treeService.getTreesByFieldId(fieldId);
+        return ResponseEntity.ok(trees);
+    }
 }

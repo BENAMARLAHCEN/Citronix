@@ -38,8 +38,4 @@ public class Farm {
         double usedArea = fields.stream().mapToDouble(Field::getArea).sum();
         return totalArea - usedArea;
     }
-
-    public boolean validateFieldsArea() {
-        return fields.stream().mapToDouble(Field::getArea).sum() < totalArea;
-    }
 }
